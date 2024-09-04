@@ -1,7 +1,7 @@
 {
   "name": "hrnet",
   "version": "0.1.0",
-  "homepage": "https://audmes.github.io/OC_P13_ArgentBank/",
+  "homepage": "https://audmes.github.io/OC_P14_HRnet/",
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.7",
