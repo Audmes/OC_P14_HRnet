@@ -8,7 +8,7 @@
 [![forthebadge](https://forthebadge.com/images/badges/uses-git.svg)](https://github.com/Audmes)
 [![React](https://img.shields.io/badge/react-20232a?style=for-the-badge&logo=react&logocolor=61dafb)](https://reactjs.org/)
 
-[Site live](https://audmes.github.io/OC_P14_WealthHealth/) - [Documentation](https://github.com/Audmes/OC_P14_WealthHealth) - <a href="#description-fr-">README en Français</a>
+[Site live](https://audmes.github.io/OC_P14_HRnet/) - [Documentation](https://github.com/Audmes/OC_P14_HRnet) - <a href="#description-fr-">README en Français</a>
 
 Ceci est un projet réalisé dans le cadre du programme de formation Développeur Front-end JavaScript React chez [OpenClassrooms](https://openclassrooms.com/fr/paths/516-developpeur-dapplication-javascript-react)
 
