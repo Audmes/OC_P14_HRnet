@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/Dropdown.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/Dropdown.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { useState, useEffect, useRef } from "react";
+import PropTypes from "prop-types";
+
+import { useClickOutside } from "../hooks/useClickOutside";
+import { useKeypress } from "../hooks/useKeypress";
+import { useTrapFocus } from "../hooks/useTrapFocus";
+
+import Input from "./Input";
+
+/**
+ * Dropdown with an input that allows the user to select a value from a list of options.
+ *
+ * options can be an array of strings, numbers, or objects.
+ * If options labels and values are different, options must be an array of objects with label and value keys:
+ * [{ label: "January", value: "0" }, ...],
+ *
+ * @category Components
+ * @component
+ * @returns {React.Component} - The dropdown component.
+ */
+function Dropdown({
+	id,
+	label,
+	value,
+	options,
+	onChange,
+	listLabel = "Choose your option",
+	showListLabel = false,
+	// Class names for the component.
+	labelClassName = "",
+	dropdownWrapperClassName = "dropdown-wrapper",
+	dropdownButtonClassName = "dropdown-button",
+	dropdownIconClassName = "dropdown-icon",
+	dropdownListWrapperClassName = "dropdown-list-wrapper",
+	dropdownOptionClassName = "dropdown-option",
+	dropdownOptionSelectedClassName = "current-selection",
+	dropdownListClassName = "dropdown-list",
+	dropdownListLabelClassName = "label",
+	// Input props.
+	error,
+	addErrorElement = true,
+	maxLength = 128,
+	required = false,
+	requiredFeedbackEnabled = false,
+	requiredFeedback = "*",
+	dropdownInputClassName = "dropdown-text",
+	// Input classnames.
+	activeClassName = "active",
+	invalidClassName = "invalid",
+	errorClassName = "error",
+	requiredFeedbackClassName = "required",
+	...props
+}) {
+	// State to track if the dropdown is open or not.
+	const [isOpen, setIsOpen] = useState(false);
+	// State to track the selected option label.
+	const [selectedOptionLabel, setSelectedOptionLabel] = useState("");
+	// State to track the selected option value.
+	const [selectedOptionValue, setSelectedOptionValue] = useState("");
+	// UseRef hook to create a ref for the modal.
+	// The useEffect hook is then used to add an event listener to the document.
+	const ref = useRef();
+	useClickOutside(ref, isOpen, () => setIsOpen(false));
+	useKeypress("Escape", isOpen, () => setIsOpen(false));
+	useTrapFocus(ref, isOpen);
+
+	useEffect(() => {
+		if (isOpen) {
+			// Scrolling the selected option into view.
+			const dropdown = document.querySelector(`#${id}-dropdown-wrapper`);
+			const selectedOption = dropdown.querySelector(`.current-selection`);
+			if (selectedOption) {
+				selectedOption.scrollIntoView();
+				selectedOption.focus();
+			}
+		}
+	}, [isOpen, id]);
+
+	useEffect(() => {
+		// Setting the label and value of the dropdown.
+		// If the value prop is passed in, it sets the label and value to the value prop.
+		// Else, it sets the label and value to the first option in the options array. */
+		let label = "";
+		let newValue = "";
+
+		if (!value) {
+			label = options[0].label ? options[0].label : options[0];
+			newValue = options[0].value ? options[0].value : options[0];
+		} else {
+			label = value;
+			newValue = value;
+			// If the option is an object (different label and value), get the option label.
+			const selectedOption = options.find((option) => option.value === value);
+			if (selectedOption) {
+				label = selectedOption.label;
+			}
+		}
+		setSelectedOptionValue(newValue);
+		setSelectedOptionLabel(label);
+	}, [value, options]);
+
+	/**
+	 * Sets the selected option label and value, closes the dropdown, and calls the onChange function if it exists.
+	 */
+	const handleOptionClick = (label, value) => {
+		setSelectedOptionLabel(label);
+		setSelectedOptionValue(value);
+		setIsOpen(false);
+		if (onChange) {
+			onChange(value);
+		}
+		const button = document.getElementById(id + "-dropdown-button");
+		if (button) {
+			button.focus();
+		}
+	};
+
+	/**
+	 * If the user presses the enter key or the space bar, call the handleOptionClick function. If the
+	 * user presses the arrow down key, focus on the next option. If the user presses the arrow up key,
+	 * focus on the previous option
+	 */
+	const handleKeyDown = (e, label, value) => {
+		if (e.key === "Enter" || e.key === " ") {
+			handleOptionClick(label, value);
+		}
+		if (e.key === "ArrowDown") {
+			e.preventDefault();
+			const selectedOption = e.target;
+			if (selectedOption) {
+				const nextOption = selectedOption.nextElementSibling;
+				if (nextOption) {
+					nextOption.focus();
+				}
+			}
+		}
+		if (e.key === "ArrowUp") {
+			e.preventDefault();
+			const selectedOption = e.target;
+			if (selectedOption) {
+				const previousOption = selectedOption.previousElementSibling;
+				if (previousOption) {
+					previousOption.focus();
+				}
+			}
+		}
+	};
+
+	/**
+	 * If the key pressed is the Enter key or the space bar, then set the state of isOpen to true
+	 */
+	const handleKeyDownLabel = (e) => {
+		if (e.key === "Enter" || e.key === " ") {
+			setIsOpen(true);
+		}
+	};
+
+	return (
+		&lt;div ref={ref}>
+			{label &amp;&amp; (
+				&lt;label
+					id={id + "-dropdown-label"}
+					htmlFor={id + "-input"}
+					// Adding the class name "active" to the label if the dropdown is open.
+					className={labelClassName + (isOpen ? " active" : "")}
+				>
+					{label} {requiredFeedbackEnabled &amp;&amp; &lt;span className={requiredFeedbackClassName}>{requiredFeedback}&lt;/span>}
+				&lt;/label>
+			)}
+			&lt;div id={id + "-dropdown-wrapper"} className={dropdownWrapperClassName}>
+				&lt;div
+					id={id + "-dropdown-button"}
+					className={dropdownButtonClassName}
+					onClick={(e) => {
+						e.preventDefault();
+						setIsOpen(true);
+					}}
+					onKeyDown={handleKeyDownLabel}
+					tabIndex={0}
+					aria-label={label}
+					aria-expanded={isOpen ? true : false}
+					role={"combobox"}
+					aria-controls={id + "-dropdown-list"}
+				>
+					&lt;Input
+						id={id}
+						className={dropdownInputClassName}
+						tabIndex={-1}
+						error={error}
+						readOnly={true}
+						data-activates={id + "-dropdown-list"}
+						value={selectedOptionLabel}
+						wrapperClassName=""
+						addErrorElement={addErrorElement}
+						maxLength={maxLength}
+						required={required}
+						requiredFeedbackEnabled={requiredFeedbackEnabled}
+						requiredFeedback={requiredFeedback}
+						activeClassName={activeClassName}
+						invalidClassName={invalidClassName}
+						errorClassName={errorClassName}
+						requiredFeedbackClassName={requiredFeedbackClassName}
+						{...props}
+					/>
+					&lt;span className={dropdownIconClassName}>&lt;/span>
+				&lt;/div>
+				{isOpen &amp;&amp; (
+					&lt;div className={dropdownListWrapperClassName} aria-modal="true">
+						{showListLabel &amp;&amp; &lt;div className={dropdownOptionClassName + " " + dropdownListLabelClassName}>{listLabel}&lt;/div>}
+						&lt;ul id={id + "-dropdown-list"} className={dropdownListClassName} role="listbox" tabIndex={-1}>
+							{options.map((option) => {
+								let label = option;
+								let value = option;
+								// Checking if the option is an object.
+								//If it is, it sets the label and value to the label and value of the object.
+								if (option.label &amp;&amp; option.value) {
+									label = option.label;
+									value = option.value;
+								}
+								return (
+									&lt;li
+										id={`${id}-dropdown-item-${value}`}
+										// Adding the class name "current-selection" to the selected option.
+										className={dropdownOptionClassName + (selectedOptionValue === value ? " " + dropdownOptionSelectedClassName : "")}
+										key={`${id}-dropdown-item-${value}`}
+										onClick={() => handleOptionClick(label, value)}
+										onKeyDown={(e) => handleKeyDown(e, label, value)}
+										tabIndex="0"
+										role="option"
+										aria-selected={selectedOptionValue === value}
+										aria-label={label}
+									>
+										{label}
+									&lt;/li>
+								);
+							})}
+						&lt;/ul>
+					&lt;/div>
+				)}
+			&lt;/div>
+		&lt;/div>
+	);
+}
+
+Dropdown.propTypes = {
+	/** The id of the dropdown */
+	id: PropTypes.string.isRequired,
+
+	/** The label of the dropdown */
+	label: PropTypes.string,
+
+	/** The value of the dropdown */
+	value: PropTypes.node,
+
+	/** The options of the dropdown */
+	options: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.number])).isRequired,
+
+	/** The function called when the dropdown is changed */
+	onChange: PropTypes.func,
+
+	/** The error of the dropdown */
+	error: PropTypes.string,
+
+	/** The label of the dropdown list */
+	listLabel: PropTypes.string,
+
+	/** Whether or not to show the list label */
+	showListLabel: PropTypes.bool,
+
+	/** The class name of the label */
+	labelClassName: PropTypes.string,
+
+	/** The class name of the dropdown wrapper */
+	dropdownWrapperClassName: PropTypes.string,
+
+	/** The class name of the dropdown button */
+	dropdownButtonClassName: PropTypes.string,
+
+	/** The class name of the dropdown icon */
+	dropdownIconClassName: PropTypes.string,
+
+	/** The class name of the dropdown input */
+	dropdownInputClassName: PropTypes.string,
+
+	/** The class name of the dropdown list wrapper */
+	dropdownListWrapperClassName: PropTypes.string,
+
+	/** The class name of the dropdown list */
+	dropdownListClassName: PropTypes.string,
+
+	/** The class name of the dropdown option */
+	dropdownOptionClassName: PropTypes.string,
+
+	/** The class name of the selected dropdown option */
+	dropdownOptionSelectedClassName: PropTypes.string,
+
+	/** The class name of the dropdown list label */
+	dropdownListLabelClassName: PropTypes.string,
+
+	/** Whether or not to add the error element */
+	addErrorElement: PropTypes.bool,
+
+	/** The maximum length of the dropdown */
+	maxLength: PropTypes.number,
+
+	/** Whether or not the dropdown is required */
+	required: PropTypes.bool,
+
+	/** Whether or not to show the required feedback */
+	requiredFeedbackEnabled: PropTypes.bool,
+
+	/** The required feedback */
+	requiredFeedback: PropTypes.string,
+
+	/** The class name of the active dropdown option */
+	activeClassName: PropTypes.string,
+
+	/** The class name of the invalid dropdown option */
+	invalidClassName: PropTypes.string,
+
+	/** The class name of the error dropdown option */
+	errorClassName: PropTypes.string,
+
+	/** The class name of the required feedback */
+	requiredFeedbackClassName: PropTypes.string,
+};
+
+export default Dropdown;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#ConditionalWrapper">ConditionalWrapper</a></li><li><a href="global.html#DatePicker">DatePicker</a></li><li><a href="global.html#Dropdown">Dropdown</a></li><li><a href="global.html#EmployeeList">EmployeeList</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#Input">Input</a></li><li><a href="global.html#Modal">Modal</a></li><li><a href="global.html#useClickOutside">useClickOutside</a></li><li><a href="global.html#useForm">useForm</a></li><li><a href="global.html#useKeypress">useKeypress</a></li><li><a href="global.html#useTrapFocus">useTrapFocus</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Wed Sep 04 2024 17:34:25 GMT+0200 (heure d’été d’Europe centrale)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

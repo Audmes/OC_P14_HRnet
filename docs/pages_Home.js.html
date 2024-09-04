@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/Home.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/Home.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useForm } from "../hooks/useForm";
+import { useDispatch } from "react-redux";
+
+import { addEmployeeAction } from "../store/employee";
+
+import { states, departments } from "../utils/statesAndDepartments";
+
+import Input from "../components/Input";
+import Modal from "../components/Modal";
+import Dropdown from "../components/Dropdown";
+import DatePicker from "../components/DatePicker";
+
+/**
+ * Render Home Page
+ *
+ * @category Pages
+ * @component
+ * @returns { React.Component } A React component
+ */
+function Home() {
+	const navigate = useNavigate();
+	const dispatch = useDispatch();
+
+	const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+	// Regex to validate inputs
+	const nameRegex = "^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{1,128}$";
+	const dateRegex = "^(0[1-9]|1[0-2])/(0[1-9]|[1-2][0-9]|3[0-1])/(19|20)\\d{2}$";
+	const dateRegexOnChange = "^[\\d\\/]{0,10}$";
+	const addressRegex = "^[a-zA-Z0-9àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{1,128}$";
+	const zipRegex = "^\\d{4}$|^\\d{5}$";
+	const zipRegexOnChange = "^\\d{0,5}$";
+
+	const dateOfBirthYearsBack = 80;
+	const dateOfBirthYearsForward = 0;
+	const startDateYearsBack = 50;
+	const startDateYearsForward = 1;
+
+	useEffect(() => {
+		document.title = "Create Employee - HRnet";
+	}, []);
+
+	const {
+		handleSubmit, // handles form submission
+		handleChange, // handles input changes
+		handleValidation, // handles input validation
+		data, // access to the form data
+		errors, // includes the errors to show
+	} = useForm({
+		validations: {
+			firstName: {
+				required: {
+					value: true,
+					message: "First Name is required",
+				},
+				pattern: {
+					value: nameRegex,
+					message: "First Name must contain only letters, spaces and some special characters",
+				},
+			},
+			lastName: {
+				required: {
+					value: true,
+					message: "Last Name is required",
+				},
+				pattern: {
+					value: nameRegex,
+					message: "Last Name must contain only letters, spaces and some special characters",
+				},
+			},
+			dateOfBirth: {
+				required: {
+					value: true,
+					message: "Date of Birth is required",
+				},
+				pattern: {
+					value: dateRegex,
+					message: "Date of Birth isn't in the format MM/DD/YYYY",
+				},
+			},
+			startDate: {
+				required: {
+					value: true,
+					message: "Start Date is required",
+				},
+				pattern: {
+					value: dateRegex,
+					message: "Start Date isn't in the format MM/DD/YYYY",
+				},
+			},
+			street: {
+				required: {
+					value: true,
+					message: "Street is required",
+				},
+				pattern: {
+					value: addressRegex,
+					message: "Street must contain only letters, numbers, spaces and some special characters",
+				},
+			},
+			city: {
+				required: {
+					value: true,
+					message: "City is required",
+				},
+				pattern: {
+					value: addressRegex,
+					message: "City must contain only letters, numbers, spaces and some special characters",
+				},
+			},
+			state: {
+				required: {
+					value: true,
+					message: "State is required",
+				},
+				custom: {
+					isValid: (value) => states.some((state) => state.value === value),
+					message: "Your selection is not valid",
+				},
+			},
+			zip: {
+				required: {
+					value: true,
+					message: "Zip is required",
+				},
+				pattern: {
+					value: zipRegex,
+					message: "Zip must be 4 or 5 digits",
+				},
+			},
+			department: {
+				required: {
+					value: true,
+					message: "Department is required",
+				},
+				custom: {
+					isValid: (value) => departments.includes(value),
+					message: "Your selection is not valid",
+				},
+			},
+		},
+		// Creating an object with the data from the form and then dispatching an action to add the employee to the store.
+		onSubmit: () => {
+			const employee = {
+				firstName: sanitizerOnSubmit(data.firstName),
+				lastName: sanitizerOnSubmit(data.lastName),
+				dateOfBirth: sanitizerOnSubmit(data.dateOfBirth),
+				startDate: sanitizerOnSubmit(data.startDate),
+				department: sanitizerOnSubmit(data.department),
+				street: sanitizerOnSubmit(data.street),
+				city: sanitizerOnSubmit(data.city),
+				state: sanitizerOnSubmit(data.state),
+				zipCode: sanitizerOnSubmit(data.zip),
+			};
+			dispatch(addEmployeeAction(employee));
+			setShowConfirmationModal(true);
+		},
+		initialValues: {
+			firstName: "",
+			lastName: "",
+			dateOfBirth: "",
+			startDate: "",
+			department: departments[0],
+			street: "",
+			city: "",
+			state: states[0].value,
+			zip: "",
+		},
+	});
+
+	/**
+	 * When the form is submitted, trim the value.
+	 * @returns The value of the input field with the whitespace trimmed.
+	 */
+	const sanitizerOnSubmit = (value) => {
+		return value.trim();
+	};
+	/**
+	 * It takes an event/value and a regex as parameters
+	 * @returns The value with the first letter capitalized and with all characters that don't match the regex removed
+	 */
+	const sanitizerOnChange = (event, regex) => {
+		const value = event.target ? event.target.value : event;
+		let valueWithFirstLetterUpperCase = value.charAt(0).toUpperCase() + value.slice(1);
+
+		// check if first letter is a letter or a number, if not, remove it
+		let regexFirstLetter = new RegExp("^[a-zA-Z0-9àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð]");
+		if (!regexFirstLetter.test(valueWithFirstLetterUpperCase.charAt(0))) {
+			valueWithFirstLetterUpperCase = valueWithFirstLetterUpperCase.slice(0, -1);
+		}
+
+		// remove last character if not in the regex
+		if (!RegExp(regex).test(valueWithFirstLetterUpperCase)) {
+			valueWithFirstLetterUpperCase = valueWithFirstLetterUpperCase.slice(0, -1);
+		}
+
+		return valueWithFirstLetterUpperCase;
+	};
+
+	return (
+		&lt;main>
+			&lt;div className="container home-page">
+				&lt;div className="title">
+					&lt;h1>HRnet&lt;/h1>
+				&lt;/div>
+				&lt;button className="button" onClick={() => navigate("/employee-list")} aria-label="Navigate to employee list page">
+					Employee List
+				&lt;/button>
+				&lt;h2>Create Employee&lt;/h2>
+
+				&lt;form
+					id="create-employee"
+					onSubmit={handleSubmit}
+					onKeyPress={(event) => {
+						if (event.key === "Enter") {
+							event.preventDefault();
+						}
+					}}
+				>
+					&lt;Input
+						id="firstName"
+						label="First Name"
+						value={data.firstName}
+						onChange={handleChange("firstName", (event) => sanitizerOnChange(event, nameRegex))}
+						maxLength={128}
+						onBlur={handleValidation}
+						error={errors.firstName || ""}
+						requiredFeedbackEnabled={true}
+					/>
+
+					&lt;Input
+						id="lastName"
+						label="Last Name"
+						value={data.lastName}
+						onChange={handleChange("lastName", (event) => sanitizerOnChange(event, nameRegex))}
+						maxLength={128}
+						onBlur={handleValidation}
+						error={errors.lastName || ""}
+						requiredFeedbackEnabled={true}
+					/>
+
+					&lt;DatePicker
+						id="dateOfBirth"
+						label="Date of Birth"
+						value={data.dateOfBirth}
+						onChange={handleChange("dateOfBirth", (event) => sanitizerOnChange(event, dateRegexOnChange))}
+						onBlurFunction={handleValidation}
+						maxLength={10}
+						error={errors.dateOfBirth || ""}
+						yearsBackNumber={dateOfBirthYearsBack}
+						yearsForwardNumber={dateOfBirthYearsForward}
+						requiredFeedbackEnabled={true}
+						invalidClassName={data.dateOfBirth ? "" : "invalid"}
+						errorClassName={data.dateOfBirth ? "error small" : "error"}
+					/>
+
+					&lt;DatePicker
+						id="startDate"
+						label="Start Date"
+						value={data.startDate}
+						onChange={handleChange("startDate", (event) => sanitizerOnChange(event, dateRegexOnChange))}
+						onBlurFunction={handleValidation}
+						maxLength={10}
+						error={errors.startDate || ""}
+						yearsBackNumber={startDateYearsBack}
+						yearsForwardNumber={startDateYearsForward}
+						requiredFeedbackEnabled={true}
+						invalidClassName={data.startDate ? "" : "invalid"}
+						errorClassName={data.startDate ? "error small" : "error"}
+					/>
+
+					&lt;fieldset className="address">
+						&lt;legend>Address&lt;/legend>
+
+						&lt;Input
+							id="street"
+							label="Street"
+							value={data.street}
+							onChange={handleChange("street", (event) => sanitizerOnChange(event, addressRegex))}
+							maxLength={128}
+							onBlur={handleValidation}
+							error={errors.street || ""}
+							requiredFeedbackEnabled={true}
+						/>
+
+						&lt;Input
+							id="city"
+							label="City"
+							value={data.city}
+							onChange={handleChange("city", (event) => sanitizerOnChange(event, addressRegex))}
+							maxLength={128}
+							onBlur={handleValidation}
+							error={errors.city || ""}
+							requiredFeedbackEnabled={true}
+						/>
+						&lt;div className="form-group">
+							&lt;Dropdown id="state" label="State" value={data.state} options={states} onChange={handleChange("state")} listLabel="Chose your state" showListLabel={true} requiredFeedbackEnabled={true} />
+						&lt;/div>
+						&lt;Input
+							id="zip"
+							label="Zip Code"
+							value={data.zip}
+							onChange={handleChange("zip", (event) => sanitizerOnChange(event, zipRegexOnChange))}
+							maxLength={5}
+							onBlur={handleValidation}
+							error={errors.zip || ""}
+							requiredFeedbackEnabled={true}
+						/>
+					&lt;/fieldset>
+					&lt;div className="form-group">
+						&lt;Dropdown
+							id="department"
+							label="Department"
+							value={data.department}
+							options={departments}
+							onChange={handleChange("department")}
+							error={errors.department || ""}
+							listLabel="Chose your department"
+							showListLabel={true}
+							requiredFeedbackEnabled={true}
+						/>
+					&lt;/div>
+					&lt;button
+						id="form-submit-button"
+						type="submit"
+						className="button horizontal-center"
+						aria-label="Create a new employee by submitting the form"
+						onKeyDown={(event) => {
+							if (event.key === "Enter" || event.key === " ") {
+								handleSubmit();
+							}
+						}}
+					>
+						Create
+					&lt;/button>
+				&lt;/form>
+				&lt;Modal id="confirmation" modalContent="Employee Created!" isOpenStateInParent={showConfirmationModal} onClose={() => setShowConfirmationModal(false)} />
+			&lt;/div>
+		&lt;/main>
+	);
+}
+
+export default Home;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#ConditionalWrapper">ConditionalWrapper</a></li><li><a href="global.html#DatePicker">DatePicker</a></li><li><a href="global.html#Dropdown">Dropdown</a></li><li><a href="global.html#EmployeeList">EmployeeList</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#Input">Input</a></li><li><a href="global.html#Modal">Modal</a></li><li><a href="global.html#useClickOutside">useClickOutside</a></li><li><a href="global.html#useForm">useForm</a></li><li><a href="global.html#useKeypress">useKeypress</a></li><li><a href="global.html#useTrapFocus">useTrapFocus</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Wed Sep 04 2024 17:34:25 GMT+0200 (heure d’été d’Europe centrale)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
