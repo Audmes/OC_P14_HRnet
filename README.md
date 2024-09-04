@@ -64,7 +64,7 @@ Ce projet consiste à participer à la conversion d’une application de jQuery 
 
 1. Cloner le repository:
 
--   `git clone https://github.com/Audmes/OC_P14_WealthHealth`
+-   `git clone https://github.com/Audmes/OC_P14_HRnet`
 
 2. Installer toutes les dépendances pour le front-end:
 
