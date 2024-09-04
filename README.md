@@ -7,7 +7,6 @@
 ![forthebadge](https://forthebadge.com/images/badges/uses-js.svg)
 [![forthebadge](https://forthebadge.com/images/badges/uses-git.svg)](https://github.com/Audmes)
 [![React](https://img.shields.io/badge/react-20232a?style=for-the-badge&logo=react&logocolor=61dafb)](https://reactjs.org/)
-[![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 
 [Site live](https://audmes.github.io/OC_P14_WealthHealth/) - [Documentation](https://github.com/Audmes/OC_P14_WealthHealth) - <a href="#description-fr-">README en Français</a>
 
@@ -73,7 +72,7 @@ Ce projet consiste à participer à la conversion d’une application de jQuery 
 
 3. Lancer le front-end:
 
--   `npm run dev`
+-   `npm start`
 
 Le front-end sera lancé à l'URL:
 `http://localhost:3000/`.
