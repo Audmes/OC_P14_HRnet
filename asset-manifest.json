@@ -1,0 +1,19 @@
+{
+  "files": {
+    "main.css": "/OC_P13_ArgentBank/static/css/main.579e0be1.css",
+    "main.js": "/OC_P13_ArgentBank/static/js/main.104d844e.js",
+    "static/js/453.9cd57cbb.chunk.js": "/OC_P13_ArgentBank/static/js/453.9cd57cbb.chunk.js",
+    "static/media/house-solid.svg": "/OC_P13_ArgentBank/static/media/house-solid.e6e2be13dec7a7a5f4ce.svg",
+    "index.html": "/OC_P13_ArgentBank/index.html",
+    "static/media/angle-left-solid.svg": "/OC_P13_ArgentBank/static/media/angle-left-solid.39517d09d898ccfab68d.svg",
+    "static/media/angle-right-solid.svg": "/OC_P13_ArgentBank/static/media/angle-right-solid.b284cc60d078dff84d88.svg",
+    "static/media/caret-down-solid.svg": "/OC_P13_ArgentBank/static/media/caret-down-solid.6beb66b8c314204a7d2b.svg",
+    "main.579e0be1.css.map": "/OC_P13_ArgentBank/static/css/main.579e0be1.css.map",
+    "main.104d844e.js.map": "/OC_P13_ArgentBank/static/js/main.104d844e.js.map",
+    "453.9cd57cbb.chunk.js.map": "/OC_P13_ArgentBank/static/js/453.9cd57cbb.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.579e0be1.css",
+    "static/js/main.104d844e.js"
+  ]
+}
