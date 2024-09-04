@@ -1,0 +1,109 @@
+// -----------------------------------------------------------------------------
+// This file contains very basic styles.
+// -----------------------------------------------------------------------------
+
+/**
+* Basic styles
+**/
+html {
+	height: -webkit-fill-available;
+}
+
+html,
+body {
+	background: linear-gradient(109.6deg, $secondary-color 11.2%, $primary-color 91.7%);
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+}
+
+#root {
+	margin: 1rem;
+}
+
+main {
+	width: min(100%, 75rem);
+	padding: 1rem 2rem;
+	border-radius: 1rem;
+	background-color: $light-color;
+	box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+	margin-inline: auto;
+	@include tablet-breakpoint {
+		width: -moz-fit-content;
+		width: fit-content;
+		margin-top: 2rem;
+		padding: 2rem;
+	}
+	@include desktop-breakpoint {
+		padding: 2rem 6rem;
+	}
+}
+
+button {
+	&.button {
+		padding: 0.4rem 0.75rem;
+		border: 1px solid transparent;
+		border-radius: 0.25rem;
+		background-color: $primary-color;
+		color: $light-color;
+		font-size: 1rem;
+		line-height: 1.5;
+		cursor: pointer;
+		transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+		&:hover {
+			border-color: $secondary-color;
+			background-color: $tertiary-color;
+			color: $light-color;
+		}
+		&:focus {
+			box-shadow: 0 0 0 0.2rem rgba(147, 173, 24, 0.5);
+		}
+	}
+}
+
+select {
+	font-size: 100%;
+}
+
+.container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.center {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.vertical-center {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+.horizontal-center {
+	display: block;
+	margin: 0 auto;
+}
+
+.relative {
+	position: relative;
+}
+
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	overflow: hidden;
+	border: 0;
+	white-space: nowrap;
+	clip-path: inset(50%);
+	clip: rect(0, 0, 0, 0);
+}
