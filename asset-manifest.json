@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/OC_P14_HRnet/static/css/main.5173cab6.css",
-    "main.js": "/OC_P14_HRnet/static/js/main.190cc6e3.js",
+    "main.js": "/OC_P14_HRnet/static/js/main.01e06d3c.js",
     "static/js/453.9cd57cbb.chunk.js": "/OC_P14_HRnet/static/js/453.9cd57cbb.chunk.js",
     "static/media/house-solid.svg": "/OC_P14_HRnet/static/media/house-solid.e6e2be13dec7a7a5f4ce.svg",
     "index.html": "/OC_P14_HRnet/index.html",
@@ -9,11 +9,11 @@
     "static/media/angle-right-solid.svg": "/OC_P14_HRnet/static/media/angle-right-solid.b284cc60d078dff84d88.svg",
     "static/media/caret-down-solid.svg": "/OC_P14_HRnet/static/media/caret-down-solid.6beb66b8c314204a7d2b.svg",
     "main.5173cab6.css.map": "/OC_P14_HRnet/static/css/main.5173cab6.css.map",
-    "main.190cc6e3.js.map": "/OC_P14_HRnet/static/js/main.190cc6e3.js.map",
+    "main.01e06d3c.js.map": "/OC_P14_HRnet/static/js/main.01e06d3c.js.map",
     "453.9cd57cbb.chunk.js.map": "/OC_P14_HRnet/static/js/453.9cd57cbb.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.5173cab6.css",
-    "static/js/main.190cc6e3.js"
+    "static/js/main.01e06d3c.js"
   ]
 }
