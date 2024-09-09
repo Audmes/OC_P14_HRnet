@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import DataTable from 'react-data-table-component';
+import { DataTable } from 'react-data-table-by-audmes';
 
 import { selectEmployeeList } from "../store/selectors";
 
@@ -25,15 +25,15 @@ function EmployeeList() {
 	}, []);
 
 	const columns = [
-		{ name: "First Name", id: "firstName", selector: row => row.firstName, sortable: true },
-		{ name: "Last Name", id: "lastName", selector: row => row.lastName, sortable: true },
-		{ name: "Start Date", id: "startDate", selector: row => row.startDate, sortable: true },
-		{ name: "Department", id: "department", selector: row => row.department, sortable: true },
-		{ name: "Date of Birth", id: "dateOfBirth", selector: row => row.dateOfBirth, sortable: true },
-		{ name: "Street", id: "street", selector: row => row.street, sortable: true },
-		{ name: "City", id: "city", selector: row => row.city, sortable: true },
-		{ name: "State", id: "state", selector: row => row.state, sortable: true },
-		{ name: "Zip Code", id: "zipCode", selector: row => row.zipCode, sortable: true },
+		{ name: "First Name", id: "firstName", sortable: true },
+		{ name: "Last Name", id: "lastName", sortable: true },
+		{ name: "Start Date", id: "startDate", sortable: true },
+		{ name: "Department", id: "department", sortable: true },
+		{ name: "Date of Birth", id: "dateOfBirth", sortable: true },
+		{ name: "Street", id: "street", sortable: true },
+		{ name: "City", id: "city", sortable: true },
+		{ name: "State", id: "state", sortable: true },
+		{ name: "Zip Code", id: "zipCode", sortable: true },
 	];
 
 	return (
