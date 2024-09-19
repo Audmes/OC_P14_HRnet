@@ -11,7 +11,8 @@ html {
 
 html,
 body {
-	background: linear-gradient(109.6deg, $secondary-color 11.2%, $primary-color 91.7%);
+	// background: linear-gradient(109.6deg, $secondary-color 11.2%, $primary-color 91.7%);
+	background-color: $secondary-color;
 }
 
 img {
