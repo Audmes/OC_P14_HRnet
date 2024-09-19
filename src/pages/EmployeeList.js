@@ -40,7 +40,7 @@ function EmployeeList() {
 		<main>
 			<div id="employee-div" className="container">
 				<h1>Current Employees</h1>
-				{employees ? <DataTable columns={columns} data={employees} tableId="employee" sortId="startDate" pagination /> : "No data available in table"}
+				{employees ? <DataTable columns={columns} data={employees} tableId="employee" sortId="startDate" /> : "No data available in table"}
 				<button className="button btnCurrent" onClick={() => navigate("/")} aria-label="Navigate to home page">
 					Home
 				</button>
